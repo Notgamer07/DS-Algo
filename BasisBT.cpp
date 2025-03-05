@@ -54,12 +54,18 @@ class BinaryTree{
             }
         }
     }
+    void inorder(Node* node){
+        if(node == nullptr) return ;
+        inorder(node->left);
+        cout<<node->data<<" ";
+        inorder(node->right);
+    }
 };
 
 int main(){
     // 1 3 7 -1 -1 11 -1 -1 5 17 -1 -1 -1
     BinaryTree tree;
     tree.root=tree.enterNode();
-    tree.LevelOrderTraversal();
+    tree.inorder(tree.root);
     return 0;
 }
