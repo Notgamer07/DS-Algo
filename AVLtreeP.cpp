@@ -2,72 +2,84 @@
 using namespace std;
 class Node{
     public:
-    int data;
+    int value;
     Node* right;
     Node* left;
     Node(int val){
-        data = val;
+        value = val;
         right = left = nullptr;
     }
 };
-class AVLtree{
+class tree{
     public:
     Node* head;
-    AVLtree(){
-        head == nullptr;
-    }
-    Node* enter(){
-        int val;
-        cout<<"Enter data: ";
-        cin>>val;
-        if(val == -1) return nullptr;
-        Node* node = new Node(val);
-        cout<<"Enter the left of "<<val<<" :";
-        node->left=enter();
-        cout<<"Enter the right of "<<val<<" :";
-        node->right=enter();
-        return node;
-    }
-    void inorder(Node* node){
-        if(node == nullptr) return;
-        inorder(node->left);
-        cout<<node->data<<"->";
-        inorder(node->right);
-    }
-    int height(Node* node){
-        if(node == nullptr) return 0;
-        int left = height(node->left);
-        int right = height(node->right);
-        return max(left,right)+1;
-    }
-    int heightFactor(Node* node){
-        return height(node->left)-height(node->right);
-    }
-    Node* insert(){
-        int val;
-        cout<<"Enter data :";
-        cin>>val;
-        if(val == -1) return nullptr;
-        Node* node= new Node(val);
-        cout<<"Enter the right of "<<val<<" :";
-        node->right = insert();
-        int heightfactor = heightFactor(node);
-        if(heightfactor < -1){ //RR rotation
-            Node* x = node->right;
-            Node* y = x->left;
-            x->left = node;
-            node->right = y;
-            return x; 
-        }
-        else return node;
+    tree(){
+        head = nullptr;
     }
 };
+int height(Node* node){
+    if (node == nullptr){
+        return 0;
+    }
+    int max1 = height(node->left);
+    int max2 = height(node->right);
+    return max(max1,max2)+1;
+}
+Node* leftrotate(Node* node){
+    Node* x = node->left;
+    Node* y = x->right;
+    // Perform rotation
+    x->right = node;
+    node->left = y;
+    return x;
+}
+Node* rightrotate(Node* node){
+    Node* x = node->right;
+    Node* y = x->left;
+    //perform rotation
+    x->left = node;
+    node->right = y;
+    return x;
+}
+Node* insertTree(Node* node, int val){
+    if(node == nullptr){
+        Node* x = new Node(val);
+        return x;
+    }
+    if(val < node->value){
+        node->left = insertTree(node->left, val);
+    }
+    else if( val > node->value){
+        node->right = insertTree(node->right, val);
+    }
+    else{
+        return node;
+    }
+    int balance = height(node->left) - height(node->right);
+    if(balance > 1 && val < node->left->value){
+        return leftrotate(node);
+    }
+    if (balance < -1 && val > node->right->value){
+        return rightrotate(node);
+    }
+    if(balance > 1 && val > node->left->value){
+        node->left = rightrotate(node->left);
+        return leftrotate(node);
+    }
+    if(balance < -1 && val < node->right->value){
+        node->right = leftrotate(node->right);
+        return rightrotate(node);
+    }
+    return node;
+}
 int main(){
-    AVLtree tree;
-    tree.head=tree.insert();
-    cout<<endl<<"root ->"<<tree.head->data;
-    AVLtree t;
-    t.head=t.enter();
-    cout<<endl<<"head->"<<t.head->data;
-    return 0;
+    tree t;
+    t.head = insertTree(t.head,25);
+    t.head = insertTree(t.head,30);
+    t.head = insertTree(t.head,26);
+    t.head = insertTree(t.head,40);
+    t.head = insertTree(t.head,80);
+    cout<<"Tree head :"<<t.head->value<<endl;
+    cout<<"Tree left :"<<t.head->left->value<<endl;
+    cout<<"Tree right :"<<t.head->right->value<<endl;
 }
