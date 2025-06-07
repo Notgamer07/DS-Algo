@@ -8,7 +8,6 @@ int main(){
         int u,v;
         cin>>u>>v;
         graph[u][v] = 1;
-        graph[v][u] = 1;
     }
     for(int i=0;i<routes;i++){
         for (int j=0;j<routes;j++){
